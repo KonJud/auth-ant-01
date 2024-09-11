@@ -18,7 +18,7 @@ interface CardWrapperProps {
     showSocial?: boolean
 }
 
-export const CardWrapper = ({
+export const CardWrapper = ({ 
     children,
     headerLabel,
     backButtonHref,
