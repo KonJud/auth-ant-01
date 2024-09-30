@@ -1,6 +1,7 @@
 "use client"
 
 import * as z from "zod"
+import { useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 
 import { useForm } from "react-hook-form"
@@ -24,6 +25,11 @@ import { FormSuccess } from "@/components/form-success"
 import { login } from "@/actions/login"
 
 export const LoginForm = () => {
+    const searchParams = useSearchParams()
+    const urlError = searchParams.get('error') === 'OAuthAccountNotLinked'
+        ? 'Email already in use with different provider'
+        : ''
+
     const [error, setError] = useState<string | undefined>("")
     const [success, setSuccess] = useState<string | undefined>("")
     const [isPending, startTransition] = useTransition()
@@ -43,8 +49,9 @@ export const LoginForm = () => {
         startTransition(() => {
             login(values)
                 .then((data) => {
-                    setError(data.error)
-                    setSuccess(data.success)
+                    setError(data?.error)
+                    // TODO: Add when we add 2FA
+                    // setSuccess(data.success)
                 })
         })
     }
@@ -101,7 +108,7 @@ export const LoginForm = () => {
                             />
                         </div>
 
-                        <FormError message={error} />
+                        <FormError message={error || urlError} />
                         <FormSuccess message={success} />
 
                         <Button
