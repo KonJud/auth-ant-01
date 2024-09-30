@@ -26,6 +26,18 @@ export const {
         }
     },
     callbacks: {
+        async signIn({ user, account}) {
+            // Allow OAuth whithout email verification
+            if (account?.provider !== 'credentials') return true
+
+            const existingUser = await getUserById(user.id as string)
+
+            if (!existingUser?.emailVerified) return false
+
+            //TODO: Add @FA check
+
+            return true
+        },
         async session({ token, session }) {
             // console.log({token})
             if (token.sub && session.user)
